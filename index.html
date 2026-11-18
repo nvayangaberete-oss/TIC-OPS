@@ -1,0 +1,100 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TIC OPS | Fashion Store</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<header class="header">
+    <a href="/" class="logo">𝑻𝑰𝑪 𝑶𝑷𝑺💫</a>
+
+    <nav>
+        <a href="/">ACCUEIL</a>
+        <a href="#collection">COLLECTION</a>
+        <a href="#about">À PROPOS</a>
+        <a href="#contact">CONTACT</a>
+    </nav>
+
+    <a href="/login" class="admin-link">ESPACE ADMIN</a>
+</header>
+
+<main>
+
+<section class="hero">
+    <div class="hero-content">
+        <p class="hero-small">TIC OPS FASHION — ABIDJAN</p>
+        <h1>DEFINE<br>YOUR STYLE.</h1>
+        <p class="hero-description">
+            YOUR STYLE. YOUR IDENTITY.
+        </p>
+        <a href="#collection" class="btn">
+            DÉCOUVRIR LA COLLECTION
+        </a>
+    </div>
+</section>
+
+<section class="collection" id="collection">
+    <div class="section-heading">
+        <div>
+            <p class="eyebrow">EXPLORE OUR STYLE</p>
+            <h2>NEW COLLECTION.</h2>
+        </div>
+        <p>Découvrez notre sélection de vêtements.</p>
+    </div>
+
+    <div class="products">
+        {% for product in products %}
+        <article class="product">
+
+            <div class="product-image">
+                <img
+                    src="{{ url_for('static', filename='uploads/' + product['image']) }}"
+                    alt="{{ product['name'] }}"
+                >
+            </div>
+
+            <div class="product-info">
+                <h3>{{ product['name'] }}</h3>
+                <p class="price">{{ product['price'] }} FCFA</p>
+                <p>Tailles : {{ product['sizes'] or 'À préciser' }}</p>
+                <p>Couleurs : {{ product['colors'] or 'À préciser' }}</p>
+
+                <a class="product-button"
+                   href="https://wa.me/?text={{ ('Bonjour, je souhaite commander ' + product['name']) | urlencode }}">
+                    COMMANDER
+                </a>
+            </div>
+
+        </article>
+        {% else %}
+        <p class="empty">
+            Nos nouvelles collections arrivent bientôt.
+        </p>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="about" id="about">
+    <p class="eyebrow">OUR IDENTITY</p>
+    <h2>YOUR STYLE.<br>YOUR IDENTITY.</h2>
+    <p>La mode est une expression de ton identité.</p>
+</section>
+
+</main>
+
+<footer id="contact">
+    <h2>𝑻𝑰𝑪 𝑶𝑷𝑺💫</h2>
+    <p>YOUR STYLE. YOUR IDENTITY.</p>
+    <p>ABIDJAN — CÔTE D'IVOIRE</p>
+    <p>© 2026 TIC OPS. ALL RIGHTS RESERVED.</p>
+</footer>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+</html>

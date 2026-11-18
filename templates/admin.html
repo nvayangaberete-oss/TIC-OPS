@@ -1,0 +1,421 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin | TIC OPS💫</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #101010;
+            color: white;
+        }
+
+        header {
+            height: 75px;
+            background: #181818;
+            border-bottom: 1px solid #333;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 7%;
+        }
+
+        .logo {
+            color: white;
+            font-size: 25px;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        nav {
+            display: flex;
+            gap: 25px;
+        }
+
+        nav a {
+            color: #ddd;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        nav a:hover {
+            color: #aaa;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 45px auto;
+        }
+
+        .welcome {
+            margin-bottom: 35px;
+        }
+
+        .welcome h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .welcome p {
+            color: #999;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 35px;
+        }
+
+        .stat-card {
+            background: #1c1c1c;
+            border: 1px solid #333;
+            padding: 25px;
+            border-radius: 12px;
+        }
+
+        .stat-card p {
+            color: #999;
+            margin-bottom: 12px;
+        }
+
+        .stat-card h2 {
+            font-size: 30px;
+        }
+
+        .panel {
+            background: #1b1b1b;
+            border: 1px solid #333;
+            border-radius: 14px;
+            padding: 30px;
+            margin-bottom: 35px;
+        }
+
+        .panel h2 {
+            font-size: 21px;
+            margin-bottom: 25px;
+        }
+
+        .admin-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+        }
+
+        .field.full {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            color: #ccc;
+            font-size: 13px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 14px;
+            background: #101010;
+            border: 1px solid #444;
+            border-radius: 7px;
+            color: white;
+            outline: none;
+        }
+
+        input:focus, textarea:focus {
+            border-color: white;
+        }
+
+        input[type="file"] {
+            cursor: pointer;
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        button {
+            border: none;
+            padding: 15px 22px;
+            border-radius: 7px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .publish-btn {
+            background: white;
+            color: black;
+            width: 100%;
+            transition: 0.3s;
+        }
+
+        .publish-btn:hover {
+            background: #ccc;
+        }
+
+        .message {
+            background: #263b2d;
+            border: 1px solid #3d684b;
+            color: #b8f5c9;
+            padding: 14px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 22px;
+        }
+
+        .product-card {
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .product-card img {
+            width: 100%;
+            height: 230px;
+            object-fit: cover;
+            display: block;
+            background: #292929;
+        }
+
+        .product-info {
+            padding: 18px;
+        }
+
+        .product-info h3 {
+            margin-bottom: 10px;
+        }
+
+        .price {
+            color: #ccc;
+            margin-bottom: 15px;
+        }
+
+        .delete-btn {
+            background: #a72b2b;
+            color: white;
+            width: 100%;
+        }
+
+        .delete-btn:hover {
+            background: #d13b3b;
+        }
+
+        .empty {
+            color: #999;
+            padding: 15px 0;
+        }
+
+        footer {
+            border-top: 1px solid #333;
+            text-align: center;
+            padding: 25px;
+            color: #777;
+            font-size: 13px;
+        }
+
+        @media (max-width: 650px) {
+            header {
+                padding: 0 5%;
+            }
+
+            .logo {
+                font-size: 19px;
+            }
+
+            nav {
+                gap: 12px;
+            }
+
+            nav a {
+                font-size: 10px;
+            }
+
+            .container {
+                width: 92%;
+                margin-top: 30px;
+            }
+
+            .welcome h1 {
+                font-size: 25px;
+            }
+
+            .panel {
+                padding: 20px;
+            }
+
+            .admin-form {
+                grid-template-columns: 1fr;
+            }
+
+            .field.full {
+                grid-column: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <a href="/" class="logo">𝑻𝑰𝑪 𝑶𝑷𝑺💫</a>
+
+    <nav>
+        <a href="/">BOUTIQUE</a>
+        <a href="/logout">DÉCONNEXION</a>
+    </nav>
+</header>
+
+<main class="container">
+
+    <section class="welcome">
+        <h1>TABLEAU DE BORD</h1>
+        <p>Bienvenue dans ton espace de gestion TIC OPS💫.</p>
+    </section>
+
+    {% with messages = get_flashed_messages() %}
+        {% for message in messages %}
+            <div class="message">{{ message }}</div>
+        {% endfor %}
+    {% endwith %}
+
+    <section class="stats">
+        <div class="stat-card">
+            <p>VÊTEMENTS PUBLIÉS</p>
+            <h2>{{ products|length }}</h2>
+        </div>
+
+        <div class="stat-card">
+            <p>ESPACE ADMINISTRATEUR</p>
+            <h2>ACTIF</h2>
+        </div>
+    </section>
+
+    <section class="panel">
+        <h2>＋ PUBLIER UN NOUVEAU VÊTEMENT</h2>
+
+        <form class="admin-form"
+              action="/admin/add"
+              method="POST"
+              enctype="multipart/form-data">
+
+            <div class="field">
+                <label>Nom du vêtement</label>
+                <input type="text" name="name"
+                       placeholder="Ex : T-shirt Oversize" required>
+            </div>
+
+            <div class="field">
+                <label>Prix en FCFA</label>
+                <input type="number" name="price"
+                       min="1" placeholder="10000" required>
+            </div>
+
+            <div class="field full">
+                <label>Description</label>
+                <textarea name="description"
+                          placeholder="Présente ton vêtement..."></textarea>
+            </div>
+
+            <div class="field">
+                <label>Tailles disponibles</label>
+                <input type="text" name="sizes"
+                       placeholder="S, M, L, XL">
+            </div>
+
+            <div class="field">
+                <label>Couleurs disponibles</label>
+                <input type="text" name="colors"
+                       placeholder="Noir, blanc, gris">
+            </div>
+
+            <div class="field full">
+                <label>Photo du vêtement</label>
+                <input type="file" name="image"
+                       accept=".jpg,.jpeg,.png,.webp" required>
+            </div>
+
+            <div class="field full">
+                <button type="submit" class="publish-btn">
+                    PUBLIER LE VÊTEMENT
+                </button>
+            </div>
+
+        </form>
+    </section>
+
+    <section class="panel">
+        <h2>MES VÊTEMENTS ({{ products|length }})</h2>
+
+        <div class="products-grid">
+
+            {% for product in products %}
+
+            <article class="product-card">
+
+                <img
+                    src="{{ url_for('static', filename='uploads/' + product['image']) }}"
+                    alt="{{ product['name'] }}"
+                >
+
+                <div class="product-info">
+                    <h3>{{ product['name'] }}</h3>
+
+                    <p class="price">
+                        {{ product['price'] }} FCFA
+                    </p>
+
+                    <form
+                        action="/admin/delete/{{ product['id'] }}"
+                        method="POST"
+                        onsubmit="return confirm('Supprimer ce vêtement ?')"
+                    >
+                        <button type="submit" class="delete-btn">
+                            SUPPRIMER
+                        </button>
+                    </form>
+                </div>
+
+            </article>
+
+            {% else %}
+
+            <p class="empty">
+                Aucun vêtement publié pour le moment.
+            </p>
+
+            {% endfor %}
+
+        </div>
+    </section>
+
+</main>
+
+<footer>
+    © 2026 TIC OPS💫 — ESPACE ADMINISTRATEUR
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,7 @@
+﻿.env
+.venv/
+venv/
+__pycache__/
+*.pyc
+tic_ops.db
+instance/

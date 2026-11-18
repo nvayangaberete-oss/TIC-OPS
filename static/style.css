@@ -1,0 +1,512 @@
+
+/* =====================================
+   TIC OPS - OFFICIAL FASHION DESIGN
+   BLACK / WHITE / PREMIUM
+===================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #fff;
+    color: #111;
+}
+
+/* HEADER */
+
+.header {
+    min-height: 85px;
+    padding: 18px 6%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 25px;
+    background: #fff;
+    border-bottom: 1px solid #eee;
+}
+
+.logo {
+    color: #111;
+    font-size: 27px;
+    font-weight: 900;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+}
+
+nav a,
+.admin-link {
+    color: #111;
+    font-size: 11px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    text-decoration: none;
+}
+
+nav a:hover,
+.admin-link:hover {
+    opacity: .55;
+}
+
+.admin-link {
+    border: 1px solid #111;
+    padding: 13px 18px;
+    white-space: nowrap;
+}
+
+/* HERO */
+
+.hero {
+    min-height: 650px;
+    padding: 80px 8%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: white;
+    background:
+        radial-gradient(ellipse at 50% 20%, #444 0%, transparent 55%),
+        linear-gradient(135deg, #050505, #222 55%, #080808);
+    position: relative;
+    overflow: hidden;
+}
+
+.hero::before {
+    content: "TIC OPS";
+    position: absolute;
+    font-size: clamp(100px, 20vw, 280px);
+    font-weight: 900;
+    color: rgba(255,255,255,.035);
+    white-space: nowrap;
+    pointer-events: none;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 1;
+}
+
+.hero-small,
+.eyebrow {
+    font-size: 11px;
+    font-weight: bold;
+    letter-spacing: 4px;
+}
+
+.hero h1 {
+    margin: 30px 0;
+    font-size: clamp(55px, 10vw, 125px);
+    line-height: .95;
+    font-weight: 900;
+    letter-spacing: -5px;
+}
+
+.hero-description {
+    margin: 25px 0;
+    font-size: 13px;
+    letter-spacing: 5px;
+}
+
+.btn {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 19px 32px;
+    background: white;
+    color: #111;
+    border: 1px solid white;
+    font-size: 11px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    text-decoration: none;
+    transition: .3s;
+}
+
+.btn:hover {
+    background: transparent;
+    color: white;
+}
+
+/* COLLECTION */
+
+.collection {
+    padding: 100px 7%;
+}
+
+.section-heading {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 25px;
+    margin-bottom: 45px;
+}
+
+.section-heading .eyebrow {
+    color: #888;
+    margin-bottom: 14px;
+}
+
+.section-heading h2 {
+    font-size: clamp(28px, 5vw, 48px);
+    letter-spacing: -2px;
+}
+
+.section-heading > p {
+    color: #777;
+    font-size: 13px;
+}
+
+.products {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 28px;
+}
+
+.product {
+    background: white;
+    border: 1px solid #eee;
+    transition: .3s;
+    overflow: hidden;
+}
+
+.product:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 15px 35px rgba(0,0,0,.08);
+}
+
+.product-image {
+    height: 390px;
+    background: #eee;
+    overflow: hidden;
+}
+
+.product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform .5s;
+}
+
+.product:hover .product-image img {
+    transform: scale(1.04);
+}
+
+.product-info {
+    padding: 23px;
+}
+
+.product-info h3 {
+    font-size: 17px;
+    margin-bottom: 12px;
+}
+
+.product-info p {
+    margin-bottom: 10px;
+    color: #777;
+    font-size: 13px;
+}
+
+.product-info .price {
+    color: #111;
+    font-size: 19px;
+    font-weight: bold;
+}
+
+.product-button {
+    display: block;
+    margin-top: 20px;
+    padding: 15px;
+    background: #111;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    font-size: 11px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    transition: .3s;
+}
+
+.product-button:hover {
+    background: #444;
+}
+
+.empty {
+    padding: 30px 0;
+    color: #777;
+}
+
+/* ABOUT */
+
+.about {
+    padding: 100px 20px;
+    background: #111;
+    color: white;
+    text-align: center;
+}
+
+.about .eyebrow {
+    color: #aaa;
+    margin-bottom: 25px;
+}
+
+.about h2 {
+    font-size: clamp(35px, 7vw, 75px);
+    line-height: 1.1;
+    margin-bottom: 25px;
+}
+
+.about > p:last-child {
+    color: #ccc;
+    font-size: 14px;
+}
+
+/* FOOTER */
+
+footer {
+    padding: 60px 20px;
+    background: #050505;
+    color: white;
+    text-align: center;
+    line-height: 2.2;
+}
+
+footer h2 {
+    font-size: 30px;
+    margin-bottom: 10px;
+}
+
+footer p {
+    font-size: 12px;
+    color: #ccc;
+    letter-spacing: 1px;
+}
+
+/* LOGIN AND ADMIN */
+
+.login-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: #f5f5f5;
+}
+
+.login-box {
+    width: 100%;
+    max-width: 440px;
+    padding: 40px 30px;
+    background: white;
+    border: 1px solid #eee;
+    text-align: center;
+}
+
+.login-box h1 {
+    font-size: 22px;
+    margin: 25px 0 12px;
+}
+
+.login-box > p {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 25px;
+}
+
+.login-box form {
+    text-align: left;
+}
+
+.login-box label,
+.admin-form label {
+    display: block;
+    font-size: 13px;
+    font-weight: bold;
+    margin-top: 15px;
+}
+
+input,
+textarea {
+    width: 100%;
+    padding: 14px;
+    margin-top: 8px;
+    border: 1px solid #ccc;
+    font-family: inherit;
+    font-size: 14px;
+}
+
+button {
+    width: 100%;
+    padding: 15px;
+    margin-top: 20px;
+    border: 1px solid #111;
+    background: #111;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:hover {
+    background: white;
+    color: #111;
+}
+
+.login-box > a:last-child {
+    display: inline-block;
+    margin-top: 25px;
+    color: #111;
+}
+
+.dashboard {
+    max-width: 1100px;
+    margin: 45px auto;
+    padding: 20px;
+}
+
+.admin-form {
+    max-width: 650px;
+    margin: 35px 0;
+    padding: 30px;
+    border: 1px solid #ddd;
+}
+
+.admin-form h2,
+.admin-products h2 {
+    margin-bottom: 20px;
+}
+
+.admin-products {
+    margin-top: 45px;
+}
+
+.admin-product {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 20px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.admin-product img {
+    width: 110px;
+    height: 120px;
+    object-fit: cover;
+}
+
+.admin-product > div {
+    flex: 1;
+}
+
+.delete-btn {
+    max-width: 150px;
+    background: #333;
+}
+
+.message {
+    padding: 12px;
+    margin: 15px 0;
+    background: #eee;
+    font-size: 13px;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 900px) {
+    .header {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    nav {
+        flex-wrap: wrap;
+        gap: 18px;
+    }
+
+    .products {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .section-heading {
+        align-items: start;
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 600px) {
+    .header {
+        padding: 20px 12px;
+    }
+
+    .logo {
+        font-size: 23px;
+    }
+
+    nav {
+        gap: 13px;
+    }
+
+    nav a {
+        font-size: 10px;
+    }
+
+    .admin-link {
+        padding: 10px 14px;
+    }
+
+    .hero {
+        min-height: 520px;
+        padding: 50px 15px;
+    }
+
+    .hero h1 {
+        font-size: 54px;
+        letter-spacing: -3px;
+    }
+
+    .hero-description {
+        font-size: 11px;
+        letter-spacing: 3px;
+    }
+
+    .collection {
+        padding: 65px 18px;
+    }
+
+    .products {
+        grid-template-columns: 1fr;
+        gap: 22px;
+    }
+
+    .product-image {
+        height: 380px;
+    }
+
+    .about {
+        padding: 75px 15px;
+    }
+
+    .dashboard {
+        padding: 12px;
+    }
+
+    .admin-form {
+        padding: 18px;
+    }
+
+    .admin-product img {
+        width: 85px;
+        height: 100px;
+    }
+}

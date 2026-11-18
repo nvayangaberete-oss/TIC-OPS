@@ -1,0 +1,75 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>𝑻𝑰𝑪 𝑶𝑷𝑺💫 | Fashion Store</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<header>
+    <a href="/" class="logo">𝑻𝑰𝑪 𝑶𝑷𝑺💫</a>
+
+    <nav>
+        <a href="/">ACCUEIL</a>
+        <a href="#collection">COLLECTION</a>
+        <a href="#contact">CONTACT</a>
+    </nav>
+</header>
+
+<section class="hero">
+    <p>WELCOME TO TIC OPS</p>
+    <h1>DEFINE YOUR STYLE.</h1>
+    <p>YOUR STYLE. YOUR IDENTITY.</p>
+    <a href="#collection" class="btn">DÉCOUVRIR</a>
+</section>
+
+<section class="collection" id="collection">
+    <h2>NEW COLLECTION.</h2>
+
+    <div class="products">
+        {% for product in products %}
+        <article class="product">
+
+            <img
+                src="{{ url_for('static', filename='uploads/' + product['image']) }}"
+                alt="{{ product['name'] }}"
+            >
+
+            <div class="product-info">
+                <h3>{{ product['name'] }}</h3>
+
+                <p class="price">
+                    {{ product['price'] }} FCFA
+                </p>
+
+                <p>Tailles : {{ product['sizes'] or 'À préciser' }}</p>
+                <p>Couleurs : {{ product['colors'] or 'À préciser' }}</p>
+                <p>{{ product['description'] }}</p>
+
+                <a class="btn"
+                   href="https://wa.me/?text={{ ('Bonjour, je souhaite commander ' + product['name']) | urlencode }}">
+                    COMMANDER
+                </a>
+            </div>
+
+        </article>
+        {% else %}
+        <p class="empty">
+            Les nouvelles collections arrivent bientôt.
+        </p>
+        {% endfor %}
+    </div>
+</section>
+
+<footer id="contact">
+    <h2>𝑻𝑰𝑪 𝑶𝑷𝑺💫</h2>
+    <p>YOUR STYLE. YOUR IDENTITY.</p>
+    <p>ABIDJAN - CÔTE D'IVOIRE</p>
+    <p>© 2026 TIC OPS. ALL RIGHTS RESERVED.</p>
+</footer>
+
+</body>
+</html>
