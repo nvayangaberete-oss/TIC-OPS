@@ -197,7 +197,7 @@ nav a:hover,
     align-items: center;
     justify-content: center;
     width: 100%;
-    height: 220px;
+    height: 130px;
     padding: 10px;
     border: none;
     margin: 0;
@@ -207,11 +207,12 @@ nav a:hover,
 }
 
 .product-image.image-preview img {
-    width: 100%;
-    height: 100%;
+    width: 65%;
+    height: 65%;
     object-fit: contain;
     transition: transform .3s ease;
 }
+
 
 .product-image.image-preview:hover img {
     transform: scale(1.06);
@@ -552,7 +553,7 @@ button:hover {
     }
 
     .product-image.image-preview {
-        height: 170px;
+      height: 110px;
         padding: 5px;
     }
 
