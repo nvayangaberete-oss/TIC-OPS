@@ -207,11 +207,12 @@ nav a:hover,
 }
 
 .product-image.image-preview img {
-    width: 65%;
-    height: 65%;
+    width: 45%;
+    height: 45%;
     object-fit: contain;
     transition: transform .3s ease;
 }
+
 
 
 .product-image.image-preview:hover img {
