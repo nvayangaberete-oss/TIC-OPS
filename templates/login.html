@@ -39,6 +39,7 @@
             font-size: 34px;
             font-weight: bold;
             margin-bottom: 12px;
+            color: #c9a45c;
         }
 
         .subtitle {
@@ -52,7 +53,7 @@
         .line {
             width: 55px;
             height: 3px;
-            background: white;
+            background: #c9a45c;
             margin: 0 auto 30px;
             border-radius: 5px;
         }
@@ -76,14 +77,14 @@
         }
 
         input:focus {
-            border-color: white;
+            border-color: #c9a45c;
         }
 
         button {
             width: 100%;
             padding: 16px;
             margin-top: 28px;
-            background: white;
+            background: #c9a45c;
             color: #080808;
             border: none;
             border-radius: 10px;
@@ -95,7 +96,7 @@
         }
 
         button:hover {
-            background: #ccc;
+            background: #e4c989;
             transform: translateY(-2px);
         }
 
@@ -109,7 +110,7 @@
         }
 
         .back-link:hover {
-            color: white;
+            color: #c9a45c;
         }
 
         .flash-message {
@@ -134,13 +135,18 @@
 </head>
 
 <body>
+
     <main class="login-card">
 
         <h1 class="logo">𝑻𝑰𝑪 𝑶𝑷𝑺💫</h1>
+
         <p class="subtitle">ESPACE ADMINISTRATEUR</p>
+
         <div class="line"></div>
 
         <form method="POST" action="{{ url_for('login') }}">
+
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
             {% with messages = get_flashed_messages() %}
                 {% for message in messages %}
@@ -149,6 +155,7 @@
             {% endwith %}
 
             <label for="username">Nom d'utilisateur</label>
+
             <input
                 type="text"
                 id="username"
@@ -159,6 +166,7 @@
             >
 
             <label for="password">Mot de passe</label>
+
             <input
                 type="password"
                 id="password"
@@ -177,5 +185,6 @@
         </a>
 
     </main>
+
 </body>
 </html>

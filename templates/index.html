@@ -4,72 +4,195 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>𝑻𝑰𝑪 𝑶𝑷𝑺💫 | Fashion Store</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <title>TIC OPS | Fashion Store</title>
+
+    <meta name="description" content="TIC OPS, votre boutique de vêtements à Abidjan. Découvrez notre collection et commandez sur WhatsApp.">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=3">
 </head>
+
 <body>
 
-<header>
+<header class="header">
     <a href="/" class="logo">𝑻𝑰𝑪 𝑶𝑷𝑺💫</a>
 
     <nav>
         <a href="/">ACCUEIL</a>
         <a href="#collection">COLLECTION</a>
+        <a href="#about">À PROPOS</a>
         <a href="#contact">CONTACT</a>
     </nav>
+
+    <a href="/login" class="admin-link">ESPACE ADMIN</a>
 </header>
 
-<section class="hero">
-    <p>WELCOME TO TIC OPS</p>
-    <h1>DEFINE YOUR STYLE.</h1>
-    <p>YOUR STYLE. YOUR IDENTITY.</p>
-    <a href="#collection" class="btn">DÉCOUVRIR</a>
-</section>
+<main>
 
-<section class="collection" id="collection">
-    <h2>NEW COLLECTION.</h2>
+    <!-- ACCUEIL -->
+    <section class="hero">
+        <div class="hero-content">
+            <p class="hero-small">TIC OPS FASHION — ABIDJAN</p>
 
-    <div class="products">
-        {% for product in products %}
-        <article class="product">
+            <h1>DEFINE<br>YOUR STYLE.</h1>
 
-            <img
-                src="{{ url_for('static', filename='uploads/' + product['image']) }}"
-                alt="{{ product['name'] }}"
-            >
+            <p class="hero-description">
+                YOUR STYLE. YOUR IDENTITY.
+            </p>
 
-            <div class="product-info">
-                <h3>{{ product['name'] }}</h3>
+            <a href="#collection" class="btn">
+                DÉCOUVRIR LA COLLECTION
+            </a>
+        </div>
+    </section>
 
-                <p class="price">
-                    {{ product['price'] }} FCFA
-                </p>
+    <!-- COLLECTION -->
+    <section class="collection" id="collection">
 
-                <p>Tailles : {{ product['sizes'] or 'À préciser' }}</p>
-                <p>Couleurs : {{ product['colors'] or 'À préciser' }}</p>
-                <p>{{ product['description'] }}</p>
-
-                <a class="btn"
-                   href="https://wa.me/?text={{ ('Bonjour, je souhaite commander ' + product['name']) | urlencode }}">
-                    COMMANDER
-                </a>
+        <div class="section-heading">
+            <div>
+                <p class="eyebrow">EXPLORE OUR STYLE</p>
+                <h2>NEW COLLECTION.</h2>
             </div>
 
-        </article>
-        {% else %}
-        <p class="empty">
-            Les nouvelles collections arrivent bientôt.
-        </p>
-        {% endfor %}
-    </div>
-</section>
+            <p>
+                Découvrez notre sélection de vêtements.
+            </p>
+        </div>
 
+        <div class="products">
+
+            {% for product in products %}
+
+            <article class="product">
+
+                <button
+                    type="button"
+                    class="product-image image-preview"
+                    onclick="openProductImage(
+                        this.querySelector('img').src,
+                        this.querySelector('img').alt
+                    )"
+                    aria-label="Agrandir la photo du vêtement"
+                >
+                    <img
+                        src="{{ url_for('static', filename='uploads/' + product['image']) }}"
+                        alt="{{ product['name'] }}"
+                        loading="lazy"
+                    >
+                </button>
+
+                <div class="product-info">
+
+                    <h3>{{ product['name'] }}</h3>
+
+                    <p class="price">
+                        {{ product['price'] }} FCFA
+                    </p>
+
+                    <p>
+                        Tailles :
+                        {{ product['sizes'] or 'À préciser' }}
+                    </p>
+
+                    <p>
+                        Couleurs :
+                        {{ product['colors'] or 'À préciser' }}
+                    </p>
+
+                    <a
+                        class="product-button"
+                        href="https://wa.me/2250152408625?text={{ ('Bonjour, je souhaite commander ' + product['name']) | urlencode }}"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        COMMANDER
+                    </a>
+
+                </div>
+
+            </article>
+
+            {% else %}
+
+            <p class="empty">
+                Nos nouvelles collections arrivent bientôt.
+            </p>
+
+            {% endfor %}
+
+        </div>
+    </section>
+
+    <!-- À PROPOS -->
+    <section class="about" id="about">
+
+        <p class="eyebrow">OUR IDENTITY</p>
+
+        <h2>
+            YOUR STYLE.<br>
+            YOUR IDENTITY.
+        </h2>
+
+        <p>
+            La mode est une expression de ton identité.
+            Découvrez un style qui vous ressemble avec TIC OPS.
+        </p>
+
+    </section>
+
+</main>
+
+<!-- PIED DE PAGE -->
 <footer id="contact">
+
     <h2>𝑻𝑰𝑪 𝑶𝑷𝑺💫</h2>
+
     <p>YOUR STYLE. YOUR IDENTITY.</p>
-    <p>ABIDJAN - CÔTE D'IVOIRE</p>
+
+    <p>ABIDJAN — CÔTE D'IVOIRE</p>
+
+    <p>CONTACT WHATSAPP</p>
+
+    <a
+        href="https://wa.me/2250152408625"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="product-button"
+    >
+        NOUS CONTACTER SUR WHATSAPP
+    </a>
+
     <p>© 2026 TIC OPS. ALL RIGHTS RESERVED.</p>
+
 </footer>
+
+<!-- AGRANDISSEMENT DES PHOTOS -->
+<div
+    class="image-modal"
+    id="imageModal"
+    aria-hidden="true"
+    onclick="if(event.target === this) closeProductImage()"
+>
+
+    <button
+        type="button"
+        class="image-modal-close"
+        onclick="closeProductImage()"
+        aria-label="Fermer"
+    >
+        ×
+    </button>
+
+    <img
+        id="modalImage"
+        src=""
+        alt="Vêtement agrandi"
+    >
+
+</div>
+
+<script src="{{ url_for('static', filename='script.js') }}?v=3"></script>
 
 </body>
 </html>

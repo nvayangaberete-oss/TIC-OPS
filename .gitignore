@@ -1,7 +1,8 @@
-﻿.env
+
+.env
+__pycache__/
+*.py[cod]
+tic_ops.db
+static/uploads/
 .venv/
 venv/
-__pycache__/
-*.pyc
-tic_ops.db
-instance/

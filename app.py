@@ -13,11 +13,15 @@ from flask import (
     session,
     flash
 )
+from flask_wtf.csrf import CSRFProtect
 from werkzeug.utils import secure_filename
 from dotenv import load_dotenv
 
 
+# =========================================
 # CONFIGURATION
+# =========================================
+
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 load_dotenv(os.path.join(BASE_DIR, ".env"))
@@ -29,26 +33,42 @@ app.secret_key = os.getenv("SECRET_KEY")
 if not app.secret_key:
     raise RuntimeError("Configure SECRET_KEY dans le fichier .env")
 
-ADMIN_USERNAME = os.getenv("ADMIN_USERNAME", "admin")
+ADMIN_USERNAME = os.getenv("ADMIN_USERNAME", "Manou papillon")
 ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD")
 
 if not ADMIN_PASSWORD:
     raise RuntimeError("Configure ADMIN_PASSWORD dans le fichier .env")
 
 app.config["MAX_CONTENT_LENGTH"] = 5 * 1024 * 1024
+
 app.config["SESSION_COOKIE_HTTPONLY"] = True
 app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
-app.config["SESSION_COOKIE_SECURE"] = False
+
+# En local : COOKIE_SECURE=False
+# En HTTPS sur Render : COOKIE_SECURE=True
+app.config["SESSION_COOKIE_SECURE"] = (
+    os.getenv("COOKIE_SECURE", "False").lower() == "true"
+)
+
+# Protection des formulaires
+csrf = CSRFProtect(app)
 
 DATABASE = os.path.join(BASE_DIR, "tic_ops.db")
-UPLOAD_FOLDER = os.path.join(BASE_DIR, "static", "uploads")
+
+UPLOAD_FOLDER = os.path.join(
+    BASE_DIR,
+    "static",
+    "uploads"
+)
 
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "webp"}
 
 
+# =========================================
 # BASE DE DONNÉES
+# =========================================
 
 def get_db():
     db = sqlite3.connect(DATABASE)
@@ -74,11 +94,15 @@ def init_db():
 init_db()
 
 
+# =========================================
 # PROTECTION ADMINISTRATEUR
+# =========================================
 
 def admin_required(function):
+
     @wraps(function)
     def wrapper(*args, **kwargs):
+
         if not session.get("admin"):
             return redirect(url_for("login"))
 
@@ -87,10 +111,13 @@ def admin_required(function):
     return wrapper
 
 
+# =========================================
 # VÉRIFICATION DES PHOTOS
+# =========================================
 
 def allowed_file(filename):
-    if "." not in filename:
+
+    if not filename or "." not in filename:
         return False
 
     extension = filename.rsplit(".", 1)[1].lower()
@@ -98,10 +125,13 @@ def allowed_file(filename):
     return extension in ALLOWED_EXTENSIONS
 
 
+# =========================================
 # PAGE D'ACCUEIL
+# =========================================
 
 @app.route("/")
 def index():
+
     with get_db() as db:
         products = db.execute(
             "SELECT * FROM products ORDER BY id DESC"
@@ -113,7 +143,9 @@ def index():
     )
 
 
+# =========================================
 # CONNEXION ADMIN
+# =========================================
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -127,6 +159,7 @@ def login():
             username == ADMIN_USERNAME
             and password == ADMIN_PASSWORD
         ):
+
             session.clear()
             session["admin"] = True
 
@@ -137,15 +170,22 @@ def login():
     return render_template("login.html")
 
 
-# DÉCONNEXION
+# =========================================
+# DÉCONNEXION SÉCURISÉE
+# =========================================
 
-@app.route("/logout")
+@app.route("/logout", methods=["POST"])
+@admin_required
 def logout():
+
     session.clear()
+
     return redirect(url_for("index"))
 
 
+# =========================================
 # TABLEAU DE BORD
+# =========================================
 
 @app.route("/admin")
 @admin_required
@@ -162,7 +202,9 @@ def admin():
     )
 
 
+# =========================================
 # AJOUTER UN VÊTEMENT
+# =========================================
 
 @app.route("/admin/add", methods=["POST"])
 @admin_required
@@ -175,6 +217,7 @@ def add_product():
 
     try:
         price = int(request.form.get("price", ""))
+
     except (ValueError, TypeError):
         flash("Le prix doit être valide.")
         return redirect(url_for("admin"))
@@ -195,6 +238,10 @@ def add_product():
 
     safe_name = secure_filename(photo.filename)
 
+    if not safe_name or "." not in safe_name:
+        flash("Nom de photo invalide.")
+        return redirect(url_for("admin"))
+
     extension = safe_name.rsplit(".", 1)[1].lower()
 
     filename = f"{uuid.uuid4().hex}.{extension}"
@@ -207,7 +254,9 @@ def add_product():
     photo.save(image_path)
 
     try:
+
         with get_db() as db:
+
             db.execute("""
                 INSERT INTO products
                 (name, description, price, sizes, colors, image)
@@ -222,6 +271,7 @@ def add_product():
             ))
 
     except Exception:
+
         if os.path.isfile(image_path):
             os.remove(image_path)
 
@@ -232,49 +282,68 @@ def add_product():
     return redirect(url_for("admin"))
 
 
+# =========================================
 # SUPPRIMER UN VÊTEMENT
+# =========================================
 
 @app.route("/admin/delete/<int:product_id>", methods=["POST"])
 @admin_required
 def delete_product(product_id):
 
+    image_filename = None
+
     with get_db() as db:
 
         product = db.execute(
-            "SELECT * FROM products WHERE id = ?",
+            "SELECT image FROM products WHERE id = ?",
             (product_id,)
         ).fetchone()
 
         if product:
+
+            image_filename = os.path.basename(
+                product["image"]
+            )
 
             db.execute(
                 "DELETE FROM products WHERE id = ?",
                 (product_id,)
             )
 
-            image_path = os.path.join(
-                UPLOAD_FOLDER,
-                os.path.basename(product["image"])
-            )
+    if image_filename:
 
-            if os.path.isfile(image_path):
-                os.remove(image_path)
+        image_path = os.path.join(
+            UPLOAD_FOLDER,
+            image_filename
+        )
 
-    flash("Vêtement supprimé.")
+        if os.path.isfile(image_path):
+            os.remove(image_path)
+
+        flash("Vêtement supprimé.")
+
+    else:
+        flash("Vêtement introuvable.")
 
     return redirect(url_for("admin"))
 
 
-# ERREURS
+# =========================================
+# GESTION DES ERREURS
+# =========================================
 
 @app.errorhandler(413)
 def file_too_large(error):
+
     return "Photo trop volumineuse. Maximum : 5 Mo.", 413
 
 
+# =========================================
 # DÉMARRAGE
+# =========================================
 
 if __name__ == "__main__":
+
     app.run(
         host="127.0.0.1",
         port=5000,
