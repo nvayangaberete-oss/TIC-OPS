@@ -13,13 +13,14 @@ from flask import (
     session,
     flash
 )
-from flask_wtf.csrf import CSRFProtect
+from flask_wtf.csrf import CSRFProtect, CSRFError
 from werkzeug.utils import secure_filename
+from werkzeug.middleware.proxy_fix import ProxyFix
 from dotenv import load_dotenv
 
 
 # =========================================
-# CONFIGURATION
+# CONFIGURATION GÉNÉRALE
 # =========================================
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -28,30 +29,53 @@ load_dotenv(os.path.join(BASE_DIR, ".env"))
 
 app = Flask(__name__)
 
-app.secret_key = os.getenv("SECRET_KEY")
+SECRET_KEY = os.getenv("SECRET_KEY")
 
-if not app.secret_key:
-    raise RuntimeError("Configure SECRET_KEY dans le fichier .env")
+if not SECRET_KEY:
+    raise RuntimeError("SECRET_KEY manquante dans les variables d'environnement.")
+
+app.config["SECRET_KEY"] = SECRET_KEY
 
 ADMIN_USERNAME = os.getenv("ADMIN_USERNAME", "Manou papillon")
 ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD")
 
 if not ADMIN_PASSWORD:
-    raise RuntimeError("Configure ADMIN_PASSWORD dans le fichier .env")
+    raise RuntimeError("ADMIN_PASSWORD manquante dans les variables d'environnement.")
 
-app.config["MAX_CONTENT_LENGTH"] = 5 * 1024 * 1024
+
+# =========================================
+# SESSIONS ET SÉCURITÉ
+# =========================================
 
 app.config["SESSION_COOKIE_HTTPONLY"] = True
 app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
 
-# En local : COOKIE_SECURE=False
-# En HTTPS sur Render : COOKIE_SECURE=True
 app.config["SESSION_COOKIE_SECURE"] = (
     os.getenv("COOKIE_SECURE", "False").lower() == "true"
 )
 
-# Protection des formulaires
+app.config["PERMANENT_SESSION_LIFETIME"] = 3600
+
+# Protection CSRF : jetons conservés et vérifiés
+app.config["WTF_CSRF_ENABLED"] = True
+app.config["WTF_CSRF_SSL_STRICT"] = False
+app.config["WTF_CSRF_TIME_LIMIT"] = 7200
+
+app.config["MAX_CONTENT_LENGTH"] = 5 * 1024 * 1024
+
+# Render utilise un proxy HTTPS
+app.wsgi_app = ProxyFix(
+    app.wsgi_app,
+    x_proto=1,
+    x_host=1
+)
+
 csrf = CSRFProtect(app)
+
+
+# =========================================
+# FICHIERS ET BASE DE DONNÉES
+# =========================================
 
 DATABASE = os.path.join(BASE_DIR, "tic_ops.db")
 
@@ -67,7 +91,7 @@ ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "webp"}
 
 
 # =========================================
-# BASE DE DONNÉES
+# CONNEXION SQLITE
 # =========================================
 
 def get_db():
@@ -112,7 +136,7 @@ def admin_required(function):
 
 
 # =========================================
-# VÉRIFICATION DES PHOTOS
+# VÉRIFICATION DES IMAGES
 # =========================================
 
 def allowed_file(filename):
@@ -123,6 +147,38 @@ def allowed_file(filename):
     extension = filename.rsplit(".", 1)[1].lower()
 
     return extension in ALLOWED_EXTENSIONS
+
+
+# =========================================
+# ÉVITER LES PAGES DE CONNEXION EN CACHE
+# =========================================
+
+@app.after_request
+def prevent_login_cache(response):
+
+    if request.endpoint == "login":
+        response.headers["Cache-Control"] = (
+            "no-store, no-cache, must-revalidate, max-age=0"
+        )
+        response.headers["Pragma"] = "no-cache"
+        response.headers["Expires"] = "0"
+
+    return response
+
+
+# =========================================
+# GESTION DES ERREURS CSRF
+# =========================================
+
+@app.errorhandler(CSRFError)
+def handle_csrf_error(error):
+
+    flash(
+        "Session de sécurité expirée. "
+        "Recharge la page et essaie de te reconnecter."
+    )
+
+    return redirect(url_for("login")), 303
 
 
 # =========================================
@@ -144,11 +200,14 @@ def index():
 
 
 # =========================================
-# CONNEXION ADMIN
+# CONNEXION ADMINISTRATEUR
 # =========================================
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
+
+    if session.get("admin"):
+        return redirect(url_for("admin"))
 
     if request.method == "POST":
 
@@ -161,6 +220,7 @@ def login():
         ):
 
             session.clear()
+            session.permanent = True
             session["admin"] = True
 
             return redirect(url_for("admin"))
@@ -171,7 +231,7 @@ def login():
 
 
 # =========================================
-# DÉCONNEXION SÉCURISÉE
+# DÉCONNEXION
 # =========================================
 
 @app.route("/logout", methods=["POST"])
@@ -184,7 +244,7 @@ def logout():
 
 
 # =========================================
-# TABLEAU DE BORD
+# TABLEAU DE BORD ADMIN
 # =========================================
 
 @app.route("/admin")
@@ -203,7 +263,7 @@ def admin():
 
 
 # =========================================
-# AJOUTER UN VÊTEMENT
+# PUBLIER UN VÊTEMENT
 # =========================================
 
 @app.route("/admin/add", methods=["POST"])
@@ -256,7 +316,6 @@ def add_product():
     try:
 
         with get_db() as db:
-
             db.execute("""
                 INSERT INTO products
                 (name, description, price, sizes, colors, image)
@@ -329,7 +388,7 @@ def delete_product(product_id):
 
 
 # =========================================
-# GESTION DES ERREURS
+# ERREUR : FICHIER TROP VOLUMINEUX
 # =========================================
 
 @app.errorhandler(413)
@@ -339,7 +398,7 @@ def file_too_large(error):
 
 
 # =========================================
-# DÉMARRAGE
+# DÉMARRAGE LOCAL
 # =========================================
 
 if __name__ == "__main__":
